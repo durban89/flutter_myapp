@@ -7,24 +7,50 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Welcome to Flutter - Gowhich',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Welcome to Flutter - Gowhich'),
-        ),
-        body: Center(
-          child: RandomWords(),
-        ),
-      ),
+      title: 'Startup Name Generator - Gowhich',
+      home: RandomWords(),
     );
   }
 }
 
 class RandomWordsState extends State<RandomWords> {
+  final _suggestions = <WordPair>[];
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
+  Widget _buildSuggestions() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemBuilder: (context, i) {
+        if (i.isOdd) return Divider();
+
+        final index = i ~/ 2;
+
+        if (index >= _suggestions.length) {
+          _suggestions.addAll(generateWordPairs().take(10));
+        }
+
+        return _buildRow(_suggestions[index]);
+      }
+    );
+  }
+
+  Widget _buildRow(WordPair wordPair) {
+    return ListTile(
+      title: Text(
+        wordPair.asPascalCase,
+        style: _biggerFont,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
-    return Text(wordPair.asCamelCase);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Startup Name Generator')
+      ),
+      body: _buildSuggestions(),
+    );
   }
 }
 
